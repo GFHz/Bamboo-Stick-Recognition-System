@@ -1,0 +1,59 @@
+# 竹签识别与自动计价系统
+
+面向餐饮结算场景的全栈应用：上传竹签图片，通过 YOLO 检测数量，人工复核后生成订单，并支持门店管理与营业统计。
+
+## 功能
+
+- JPG / PNG 图片上传、区域预处理、竹签检测和位置标注
+- 识别结果人工调整，竹签与铁签计价
+- 管理员与员工角色、账号认证与密码管理
+- 订单查询、价格配置、员工管理、营业统计与 Excel 导出
+- 图片定期清理
+
+## 技术栈
+
+前端：Vue 3、Vite、Element Plus、Pinia、Vue Router、ECharts、Axios。
+
+后端：FastAPI、SQLAlchemy、Alembic、MySQL、JWT、APScheduler。
+
+识别：Ultralytics YOLO、OpenCV、Pillow；模型路径为 `detection/best.pt`。
+
+## 本地运行
+
+建议使用 Python 3.10+、Node.js 18+，并准备 MySQL 数据库 `skewer_count`。
+
+```powershell
+cd backend
+python -m venv .venv
+.venv\Scripts\Activate.ps1
+pip install -r requirements.txt
+Copy-Item .env.example .env
+# 修改 .env 的数据库连接与 JWT_SECRET，按需配置腾讯云验证码
+alembic upgrade head
+uvicorn app.main:app --reload
+```
+
+另开终端：
+
+```powershell
+cd frontend
+npm install
+npm run dev
+```
+
+前端默认地址为 http://localhost:5173，接口文档为 http://localhost:8000/docs。
+
+`backend/scripts/init_db.py` 是开发重置脚本，会删除并重建数据表，且包含默认开发账号；请仅在可清空的本地测试库使用。正式环境应采用迁移、独立创建管理员并设置强密码。
+
+## 目录
+
+```text
+backend/       API、业务服务、数据库模型与迁移
+frontend/      Vue 页面与交互
+detection/     检测模型权重
+*.md           需求、数据库、模块与测试文档
+```
+
+## 展示说明
+
+个人主页中的检测画面为交互示意，不代表模型真实推理或测试精度。真实识别需运行后端与模型。本仓库不包含本地密钥、上传图片、运行环境和压缩备份。当前没有附带许可证，复用前请与作者确认授权范围。
